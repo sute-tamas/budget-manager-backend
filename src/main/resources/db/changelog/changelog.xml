@@ -4,4 +4,63 @@
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
+  <changeSet id="1" author="tsute">
+    <comment>
+      Creation of the category, subcategory, and item tables, and its additions.
+    </comment>
+
+    <createTable tableName="category">
+      <column name="id" type="bigint">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_category"/>
+      </column>
+      <column name="name" type="varchar(200)">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <createTable tableName="subcategory">
+      <column name="id" type="bigint">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_subcategory"/>
+      </column>
+      <column name="name" type="varchar(200)">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <createTable tableName="item">
+      <column name="id" type="bigint">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_item"/>
+      </column>
+      <column name="name" type="varchar(200)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="cost" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column name="category_id" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column name="subcategory_id" type="bigint">
+        <constraints nullable="true"/>
+      </column>
+    </createTable>
+
+    <createSequence sequenceName="seq_category"
+      startValue="10" incrementBy="1" />
+    <createSequence sequenceName="seq_subcategory"
+      startValue="10" incrementBy="1" />
+    <createSequence sequenceName="seq_item"
+      startValue="10" incrementBy="1" />
+
+    <addForeignKeyConstraint
+      constraintName="fk_item_category" onDelete="CASCADE"
+      baseTableName="item" baseColumnNames="category_id"
+      referencedTableName="category" referencedColumnNames="id" />
+    <addForeignKeyConstraint
+      constraintName="fk_item_subcategory" onDelete="CASCADE"
+      baseTableName="item" baseColumnNames="subcategory_id"
+      referencedTableName="subcategory" referencedColumnNames="id" />
+
+  </changeSet>
+
 </databaseChangeLog>
