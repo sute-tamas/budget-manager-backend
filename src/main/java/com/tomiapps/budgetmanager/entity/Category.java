@@ -1,16 +1,19 @@
 package com.tomiapps.budgetmanager.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Table(name = "category")
+@Table(name = "categories")
 @Entity
 @Data
 @AllArgsConstructor
@@ -23,5 +26,9 @@ public class Category {
     private Long id;
 
     private String name;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "category")
+    private List<Subcategory> subcategories;
 
 }

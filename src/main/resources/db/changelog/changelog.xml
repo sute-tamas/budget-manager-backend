@@ -6,10 +6,10 @@
 
   <changeSet id="1" author="tsute">
     <comment>
-      Creation of the category, subcategory, and item tables, and its additions.
+      Creation of the category, subcategory, item, and transaction tables, and its additions.
     </comment>
 
-    <createTable tableName="category">
+    <createTable tableName="categories">
       <column name="id" type="bigint">
         <constraints nullable="false" primaryKey="true" primaryKeyName="pk_category"/>
       </column>
@@ -18,30 +18,42 @@
       </column>
     </createTable>
 
-    <createTable tableName="subcategory">
+    <createTable tableName="subcategories">
       <column name="id" type="bigint">
         <constraints nullable="false" primaryKey="true" primaryKeyName="pk_subcategory"/>
       </column>
       <column name="name" type="varchar(200)">
         <constraints nullable="false"/>
       </column>
+      <column name="category_id" type="bigint">
+        <constraints nullable="false"/>
+      </column>
     </createTable>
 
-    <createTable tableName="item">
+    <createTable tableName="items">
       <column name="id" type="bigint">
         <constraints nullable="false" primaryKey="true" primaryKeyName="pk_item"/>
       </column>
       <column name="name" type="varchar(200)">
         <constraints nullable="false"/>
       </column>
-      <column name="cost" type="bigint">
-        <constraints nullable="false"/>
-      </column>
-      <column name="category_id" type="bigint">
-        <constraints nullable="false"/>
-      </column>
       <column name="subcategory_id" type="bigint">
-        <constraints nullable="true"/>
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <createTable tableName="transactions">
+      <column name="id" type="bigint">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_transaction"/>
+      </column>
+      <column name="item_id" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column name="value" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column name="timestamp" type="timestamp">
+        <constraints nullable="false"/>
       </column>
     </createTable>
 
@@ -51,15 +63,21 @@
       startValue="10" incrementBy="1" />
     <createSequence sequenceName="seq_item"
       startValue="10" incrementBy="1" />
+    <createSequence sequenceName="seq_transaction"
+      startValue="10" incrementBy="1" />
 
     <addForeignKeyConstraint
-      constraintName="fk_item_category" onDelete="CASCADE"
-      baseTableName="item" baseColumnNames="category_id"
-      referencedTableName="category" referencedColumnNames="id" />
+      constraintName="fk_subcategory_category" onDelete="CASCADE"
+      baseTableName="subcategories" baseColumnNames="category_id"
+      referencedTableName="categories" referencedColumnNames="id" />
     <addForeignKeyConstraint
       constraintName="fk_item_subcategory" onDelete="CASCADE"
-      baseTableName="item" baseColumnNames="subcategory_id"
-      referencedTableName="subcategory" referencedColumnNames="id" />
+      baseTableName="items" baseColumnNames="subcategory_id"
+      referencedTableName="subcategories" referencedColumnNames="id" />
+    <addForeignKeyConstraint
+      constraintName="fk_transaction_item" onDelete="CASCADE"
+      baseTableName="transactions" baseColumnNames="item_id"
+      referencedTableName="items" referencedColumnNames="id" />
 
   </changeSet>
 

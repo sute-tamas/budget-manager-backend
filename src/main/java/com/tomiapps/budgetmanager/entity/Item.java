@@ -6,13 +6,15 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Table(name = "item")
+@Table(name = "items")
 @Entity
 @Data
 @AllArgsConstructor
@@ -26,14 +28,11 @@ public class Item {
 
     private String name;
 
-    private Long cost;
-
-    @ManyToOne
-    @JoinColumn(name = "category_id")
-    private Category category;
-
     @ManyToOne
     @JoinColumn(name = "subcategory_id")
     private Subcategory subcategory;
+
+    @OneToMany(mappedBy = "item")
+    private List<Transaction> transactions;
 
 }

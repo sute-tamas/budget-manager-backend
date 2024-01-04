@@ -1,40 +1,36 @@
 package com.tomiapps.budgetmanager.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-import java.util.List;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Table(name = "subcategories")
+@Table(name = "transactions")
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Subcategory {
+public class Transaction {
 
     @Id
-    @SequenceGenerator(name = "seq_subcategory", sequenceName = "seq_subcategory", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_subcategory")
+    @SequenceGenerator(name = "seq_transaction", sequenceName = "seq_transaction", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_transaction")
     private Long id;
 
-    private String name;
-
     @ManyToOne
-    @JoinColumn(name = "category_id")
-    private Category category;
+    @JoinColumn(name = "item_id")
+    private Item item;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "subcategory")
-    private List<Item> items;
+    private Long value;
+
+    private LocalDateTime timestamp;
 
 }
