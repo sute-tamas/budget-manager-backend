@@ -46,7 +46,8 @@ public abstract class GenericService<T extends Serializable, REQ, RESP, REPO ext
     public RESP update(REQ request, Long id) {
         T model = repository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("Entity not found with id: " + id));
-        BeanUtils.copyProperties(request, model);
+        T modelFromRequest = convertRequest(request);
+        BeanUtils.copyProperties(modelFromRequest, model);
         return convertResponse(repository.save(model));
     }
 

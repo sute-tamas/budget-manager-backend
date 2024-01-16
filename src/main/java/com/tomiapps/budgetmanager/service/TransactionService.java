@@ -40,8 +40,8 @@ public class TransactionService extends
 
     @Override
     protected Transaction convertRequest(TransactionRequest request) {
-        Item item = itemRepository.findByName(request.getItem().getName())
-                .orElseThrow(() -> new EntityNotFoundException("Item not found with name: " + request.getItem().getName()));
+        Item item = itemRepository.findById(request.getItem().getId())
+                .orElseThrow(() -> new EntityNotFoundException("Item not found with id: " + request.getItem().getId()));
 
         return new Transaction(
                 request.getId(),
@@ -50,4 +50,5 @@ public class TransactionService extends
                 (request.getTimestamp()) == null ? LocalDateTime.now() : request.getTimestamp()
         );
     }
+
 }
