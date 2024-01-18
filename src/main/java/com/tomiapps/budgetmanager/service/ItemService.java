@@ -47,13 +47,13 @@ public class ItemService extends GenericService<Item, ItemRequest, ItemResponse,
 
     @Override
     protected Item convertRequest(ItemRequest request) {
-        Subcategory subcategory = subcategoryRepository.findById(request.getSubcategory().getId())
-                .orElseThrow(() -> new EntityNotFoundException("Subcategory not found with id: " + request.getSubcategory().getId()));
+        Subcategory subcategory = subcategoryRepository.findById(request.getSubcategoryId())
+                .orElseThrow(() -> new EntityNotFoundException("Subcategory not found with id: " + request.getSubcategoryId()));
         List<Transaction> transactions = transactionRepository.findByItemId(request.getId());
 
         return new Item(
                 request.getId(),
-                request.getName(),
+                request.getName().toLowerCase(),
                 subcategory,
                 transactions
         );

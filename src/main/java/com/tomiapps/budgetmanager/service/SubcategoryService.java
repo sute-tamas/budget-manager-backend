@@ -43,12 +43,12 @@ public class SubcategoryService extends
 
     @Override
     protected Subcategory convertRequest(SubcategoryRequest request) {
-        Category category = categoryRepository.findById(request.getCategory().getId())
-                .orElseThrow(() -> new EntityNotFoundException("Category not found with id: " + request.getCategory().getId()));
+        Category category = categoryRepository.findById(request.getCategoryId())
+                .orElseThrow(() -> new EntityNotFoundException("Category not found with id: " + request.getCategoryId()));
         List<Item> items = itemRepository.findBySubcategoryId(request.getId());
         return new Subcategory(
                 request.getId(),
-                request.getName(),
+                request.getName().toLowerCase(),
                 category,
                 items
         );

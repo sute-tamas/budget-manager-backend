@@ -32,7 +32,8 @@ public abstract class GenericService<T extends Serializable, REQ, RESP, REPO ext
 
     @Transactional
     public RESP find(Long id) {
-        T model = repository.findById(id).orElse(null);
+        T model = repository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Entity not found with id: " + id));
         return convertResponse(model);
     }
 
@@ -47,7 +48,7 @@ public abstract class GenericService<T extends Serializable, REQ, RESP, REPO ext
         T model = repository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("Entity not found with id: " + id));
         T modelFromRequest = convertRequest(request);
-        BeanUtils.copyProperties(modelFromRequest, model);
+        BeanUtils.copyProperties(modelFromRequest, model, "id");
         return convertResponse(repository.save(model));
     }
 

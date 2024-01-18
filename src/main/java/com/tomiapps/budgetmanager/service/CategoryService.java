@@ -35,7 +35,7 @@ public class CategoryService extends
 
         return new Category(
                 request.getId(),
-                request.getName(),
+                request.getName().toLowerCase(),
                 subcategories
         );
     }
