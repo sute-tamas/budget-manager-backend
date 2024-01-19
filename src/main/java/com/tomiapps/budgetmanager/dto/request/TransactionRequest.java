@@ -12,6 +12,8 @@ public class TransactionRequest {
 
     private Long value;
 
+    private Long userId;
+
     private LocalDateTime timestamp;
 
 }

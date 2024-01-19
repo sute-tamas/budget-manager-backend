@@ -32,6 +32,10 @@ public class Transaction implements Serializable {
 
     private Long value;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     private LocalDateTime timestamp;
 
 }

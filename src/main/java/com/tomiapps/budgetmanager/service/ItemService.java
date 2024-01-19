@@ -6,12 +6,11 @@ import com.tomiapps.budgetmanager.dto.response.ItemResponse;
 import com.tomiapps.budgetmanager.dto.response.SubcategoryResponse;
 import com.tomiapps.budgetmanager.entity.Item;
 import com.tomiapps.budgetmanager.entity.Subcategory;
-import com.tomiapps.budgetmanager.entity.Transaction;
 import com.tomiapps.budgetmanager.repository.ItemRepository;
 import com.tomiapps.budgetmanager.repository.SubcategoryRepository;
 import com.tomiapps.budgetmanager.repository.TransactionRepository;
 import jakarta.persistence.EntityNotFoundException;
-import java.util.List;
+import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,6 +27,10 @@ public class ItemService extends GenericService<Item, ItemRequest, ItemResponse,
     @Getter
     @Setter(value = AccessLevel.PROTECTED, onMethod = @__({ @Autowired}))
     private TransactionRepository transactionRepository;
+
+    @Getter
+    @Setter(value = AccessLevel.PROTECTED, onMethod = @__({ @Autowired}))
+    private ItemRepository itemRepository;
 
     @Override
     protected ItemResponse convertResponse(Item model) {
@@ -49,13 +52,14 @@ public class ItemService extends GenericService<Item, ItemRequest, ItemResponse,
     protected Item convertRequest(ItemRequest request) {
         Subcategory subcategory = subcategoryRepository.findById(request.getSubcategoryId())
                 .orElseThrow(() -> new EntityNotFoundException("Subcategory not found with id: " + request.getSubcategoryId()));
-        List<Transaction> transactions = transactionRepository.findByItemId(request.getId());
+        Optional<Item> item = (request.getId() == null) ?
+                Optional.empty() : itemRepository.findById(request.getId());
 
-        return new Item(
-                request.getId(),
+        return item.orElseGet(() -> new Item(
+                null,
                 request.getName().toLowerCase(),
                 subcategory,
-                transactions
+                null)
         );
     }
 }

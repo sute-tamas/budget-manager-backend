@@ -18,6 +18,8 @@ public class TransactionResponse {
 
     private Long value;
 
+    private UserResponse user;
+
     private LocalDateTime timestamp;
 
 }

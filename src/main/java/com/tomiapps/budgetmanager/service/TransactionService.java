@@ -4,10 +4,13 @@ import com.tomiapps.budgetmanager.dto.request.TransactionRequest;
 import com.tomiapps.budgetmanager.dto.response.ItemResponse;
 import com.tomiapps.budgetmanager.dto.response.SubcategoryResponse;
 import com.tomiapps.budgetmanager.dto.response.TransactionResponse;
+import com.tomiapps.budgetmanager.dto.response.UserResponse;
 import com.tomiapps.budgetmanager.entity.Item;
 import com.tomiapps.budgetmanager.entity.Transaction;
+import com.tomiapps.budgetmanager.entity.User;
 import com.tomiapps.budgetmanager.repository.ItemRepository;
 import com.tomiapps.budgetmanager.repository.TransactionRepository;
+import com.tomiapps.budgetmanager.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -29,6 +32,10 @@ public class TransactionService extends
     @Setter(value = AccessLevel.PROTECTED, onMethod = @__({ @Autowired}))
     private TransactionRepository transactionRepository;
 
+    @Getter
+    @Setter(value = AccessLevel.PROTECTED, onMethod = @__({ @Autowired}))
+    private UserRepository userRepository;
+
     @Override
     protected TransactionResponse convertResponse(Transaction model) {
         return new TransactionResponse(
@@ -39,6 +46,12 @@ public class TransactionService extends
                         new SubcategoryResponse()
                 ),
                 model.getValue(),
+                new UserResponse(
+                        model.getUser().getId(),
+                        model.getUser().getUsername(),
+                        model.getUser().getFirstName(),
+                        model.getUser().getLastName()
+                ),
                 model.getTimestamp()
         );
     }
@@ -47,18 +60,18 @@ public class TransactionService extends
     protected Transaction convertRequest(TransactionRequest request) {
         Item item = itemRepository.findById(request.getItemId())
                 .orElseThrow(() -> new EntityNotFoundException("Item not found with id: " + request.getItemId()));
-        Optional<Transaction> transaction = transactionRepository.findById(request.getId());
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + request.getUserId()));
+        Optional<Transaction> transaction = (request.getId() == null) ?
+                Optional.empty() : transactionRepository.findById(request.getId());
 
-        if (transaction.isPresent()) {
-            return transaction.get();
-        } else {
-            return new Transaction(
-                    request.getId(),
-                    item,
-                    request.getValue(),
-                    (request.getTimestamp()) == null ? LocalDateTime.now() : request.getTimestamp()
-            );
-        }
+        return transaction.orElseGet(() -> new Transaction(
+                null,
+                item,
+                request.getValue(),
+                user,
+                (request.getTimestamp()) == null ? LocalDateTime.now() : request.getTimestamp())
+        );
     }
 
 }
