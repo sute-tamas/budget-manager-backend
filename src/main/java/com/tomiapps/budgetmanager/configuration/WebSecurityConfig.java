@@ -20,14 +20,12 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .authorizeHttpRequests((authorizeHttpRequests) ->
-                        authorizeHttpRequests
-                                .requestMatchers("/api/**").permitAll()
-                                .anyRequest().denyAll()
-                )
-                //.formLogin(withDefaults())
-                .csrf(AbstractHttpConfigurer::disable); // same as -> csrf.disable()
+        http.authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/auth").permitAll()
+                        .anyRequest().authenticated())
+                .httpBasic(withDefaults())
+                .formLogin(withDefaults())
+                .csrf(AbstractHttpConfigurer::disable);
         return http.build();
     }
 
