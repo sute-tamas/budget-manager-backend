@@ -4,6 +4,7 @@ import com.tomiapps.budgetmanager.dto.request.UserRequest;
 import com.tomiapps.budgetmanager.dto.response.UserResponse;
 import com.tomiapps.budgetmanager.entity.User;
 import com.tomiapps.budgetmanager.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -27,6 +28,7 @@ public class UserService extends GenericService<User, UserRequest, UserResponse,
         return new UserResponse(
                 model.getId(),
                 model.getUsername(),
+                model.getEmail(),
                 model.getFirstName(),
                 model.getLastName()
         );
@@ -35,11 +37,13 @@ public class UserService extends GenericService<User, UserRequest, UserResponse,
     @Override
     protected User convertRequest(UserRequest request) {
         Optional<User> user = (request.getId() == null) ?
-                Optional.empty() : userRepository.findById(request.getId());
+                Optional.empty() : Optional.of(userRepository.findById(request.getId()).orElseThrow(
+                        () -> new EntityNotFoundException("User not found with id: " + request.getId())));
 
         return user.orElseGet(() -> new User(
                 null,
                 request.getUserName(),
+                request.getEmail(),
                 passwordEncoder.encode(request.getPassword()),
                 request.getFirstName(),
                 request.getLastName(),

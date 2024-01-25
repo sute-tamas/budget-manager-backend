@@ -52,8 +52,10 @@ public class ItemService extends GenericService<Item, ItemRequest, ItemResponse,
     protected Item convertRequest(ItemRequest request) {
         Subcategory subcategory = subcategoryRepository.findById(request.getSubcategoryId())
                 .orElseThrow(() -> new EntityNotFoundException("Subcategory not found with id: " + request.getSubcategoryId()));
+
         Optional<Item> item = (request.getId() == null) ?
-                Optional.empty() : itemRepository.findById(request.getId());
+                Optional.empty() : Optional.of(itemRepository.findById(request.getId()).orElseThrow(
+                        () -> new EntityNotFoundException("Item not found with id: " + request.getId())));
 
         return item.orElseGet(() -> new Item(
                 null,

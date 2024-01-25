@@ -49,6 +49,7 @@ public class TransactionService extends
                 new UserResponse(
                         model.getUser().getId(),
                         model.getUser().getUsername(),
+                        model.getUser().getEmail(),
                         model.getUser().getFirstName(),
                         model.getUser().getLastName()
                 ),
@@ -62,8 +63,10 @@ public class TransactionService extends
                 .orElseThrow(() -> new EntityNotFoundException("Item not found with id: " + request.getItemId()));
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + request.getUserId()));
+
         Optional<Transaction> transaction = (request.getId() == null) ?
-                Optional.empty() : transactionRepository.findById(request.getId());
+                Optional.empty() : Optional.of(transactionRepository.findById(request.getId()).orElseThrow(
+                        () -> new EntityNotFoundException("Transaction not found with id: " + request.getId())));
 
         return transaction.orElseGet(() -> new Transaction(
                 null,

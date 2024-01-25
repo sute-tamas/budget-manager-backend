@@ -5,6 +5,7 @@ import com.tomiapps.budgetmanager.dto.response.CategoryResponse;
 import com.tomiapps.budgetmanager.entity.Category;
 import com.tomiapps.budgetmanager.repository.CategoryRepository;
 import com.tomiapps.budgetmanager.repository.SubcategoryRepository;
+import jakarta.persistence.EntityNotFoundException;
 import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -35,7 +36,8 @@ public class CategoryService extends
     @Override
     protected Category convertRequest(CategoryRequest request) {
         Optional<Category> category = (request.getId() == null) ?
-                Optional.empty() : categoryRepository.findById(request.getId());
+                Optional.empty() : Optional.of(categoryRepository.findById(request.getId()).orElseThrow(
+                        () -> new EntityNotFoundException("Category not found with id: " + request.getId())));
 
         return category.orElseGet(() -> new Category(
                 null,
