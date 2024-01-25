@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+  <changeSet id="1" author="tsute">
+    <comment>
+      Creation of the category, subcategory, item, and transaction tables, and its additions.
+    </comment>
+
+    <createTable tableName="categories">
+      <column name="id" type="bigint">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_category"/>
+      </column>
+      <column name="name" type="varchar(200)">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <createTable tableName="subcategories">
+      <column name="id" type="bigint">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_subcategory"/>
+      </column>
+      <column name="name" type="varchar(200)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="category_id" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <createTable tableName="items">
+      <column name="id" type="bigint">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_item"/>
+      </column>
+      <column name="name" type="varchar(200)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="subcategory_id" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <createTable tableName="transactions">
+      <column name="id" type="bigint">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_transaction"/>
+      </column>
+      <column name="item_id" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column name="value" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column name="timestamp" type="timestamp">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <createSequence sequenceName="seq_category"
+      startValue="10" incrementBy="1" />
+    <createSequence sequenceName="seq_subcategory"
+      startValue="10" incrementBy="1" />
+    <createSequence sequenceName="seq_item"
+      startValue="10" incrementBy="1" />
+    <createSequence sequenceName="seq_transaction"
+      startValue="10" incrementBy="1" />
+
+    <addForeignKeyConstraint
+      constraintName="fk_subcategory_category" onDelete="CASCADE"
+      baseTableName="subcategories" baseColumnNames="category_id"
+      referencedTableName="categories" referencedColumnNames="id" />
+    <addForeignKeyConstraint
+      constraintName="fk_item_subcategory" onDelete="CASCADE"
+      baseTableName="items" baseColumnNames="subcategory_id"
+      referencedTableName="subcategories" referencedColumnNames="id" />
+    <addForeignKeyConstraint
+      constraintName="fk_transaction_item" onDelete="CASCADE"
+      baseTableName="transactions" baseColumnNames="item_id"
+      referencedTableName="items" referencedColumnNames="id" />
+
+  </changeSet>
+
+  <changeSet id="2" author="tsute">
+
+    <createTable tableName="users">
+      <column name="id" type="bigint">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_user"/>
+      </column>
+      <column name="username" type="varchar(100)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="password" type="varchar(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="first_name" type="varchar(100)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_name" type="varchar(200)">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <createSequence sequenceName="seq_user"
+      startValue="10" incrementBy="1" />
+
+    <addColumn tableName="transactions">
+      <column name="user_id" type="bigint">
+        <constraints nullable="false" />
+      </column>
+    </addColumn>
+
+  </changeSet>
+
+</databaseChangeLog>
