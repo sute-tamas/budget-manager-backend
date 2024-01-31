@@ -8,3 +8,17 @@ spring:
   liquibase:
     enabled: 'true'
     change-log: classpath:/db/changelog/changelog.xml
+
+server:
+  port: 8080
+  error:
+    include-message: always
+
+rsa:
+  private-key: classpath:certs/privkey.pem
+  public-key: classpath:certs/pubkey.pem
+
+logging:
+  level:
+    org:
+      springframework: INFO
