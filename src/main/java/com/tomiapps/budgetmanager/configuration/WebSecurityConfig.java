@@ -58,8 +58,6 @@ public class WebSecurityConfig {
         return new ProviderManager(authProvider);
     }
 
-
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, HandlerMappingIntrospector introspector) throws Exception {
         return http

@@ -21,4 +21,5 @@ rsa:
 logging:
   level:
     org:
-      springframework: INFO
+      springframework:
+        security: DEBUG

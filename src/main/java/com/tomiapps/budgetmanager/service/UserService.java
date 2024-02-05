@@ -20,7 +20,8 @@ public class UserService extends GenericService<User, UserRequest, UserResponse,
     @Setter(value = AccessLevel.PROTECTED, onMethod = @__({ @Autowired}))
     private UserRepository userRepository;
 
-    @Autowired
+    @Getter
+    @Setter(value = AccessLevel.PROTECTED, onMethod = @__({ @Autowired}))
     private PasswordEncoder passwordEncoder;
 
     @Override
